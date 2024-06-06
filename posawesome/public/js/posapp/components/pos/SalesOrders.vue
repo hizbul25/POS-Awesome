@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { evntBus } from "../../bus";
+import evntBus from "../../bus";
 import format from "../../format";
 export default {
   // props: ["draftsDialog"],
@@ -190,7 +190,7 @@ export default {
             }
           }
         }
-        evntBus.$emit("load_order", this.selected[0]);
+        evntBus.emit("load_order", this.selected[0]);
         this.draftsDialog = false;
         frappe.call({
           method: "posawesome.posawesome.api.posapp.delete_sales_invoice",
@@ -207,7 +207,7 @@ export default {
     },
   },
   created: function () {
-    evntBus.$on("open_orders", (data) => {
+    evntBus.on("open_orders", (data) => {
       this.clearSelected();
       this.draftsDialog = true;
       this.dialog_data = data;
@@ -215,7 +215,7 @@ export default {
     });
   },
   mounted() {
-    evntBus.$on("register_pos_profile", (data) => {
+    evntBus.on("register_pos_profile", (data) => {
       this.pos_profile = data.pos_profile;
     });
   },

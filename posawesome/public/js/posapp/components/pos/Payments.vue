@@ -700,7 +700,7 @@
 </template>
 
 <script>
-import { evntBus } from "../../bus";
+import evntBus from "../../bus";
 import format from "../../format";
 export default {
   mixins: [format],
@@ -732,12 +732,12 @@ export default {
 
   methods: {
     back_to_invoice() {
-      evntBus.$emit("show_payment", "false");
-      evntBus.$emit("set_customer_readonly", false);
+      evntBus.emit("show_payment", "false");
+      evntBus.emit("set_customer_readonly", false);
     },
     submit(event, payment_received = false, print = false) {
       if (!this.invoice_doc.is_return && this.total_payments < 0) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `Payments not correct`,
           color: "error",
         });
@@ -756,7 +756,7 @@ export default {
           }
         });
         if (!phone_payment_is_valid) {
-          evntBus.$emit("show_mesage", {
+          evntBus.emit("show_mesage", {
             text: __(
               "Please request phone payment or use other payment method"
             ),
@@ -773,7 +773,7 @@ export default {
         this.total_payments <
           (this.invoice_doc.rounded_total || this.invoice_doc.grand_total)
       ) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `The amount paid is not complete`,
           color: "error",
         });
@@ -786,7 +786,7 @@ export default {
         !this.pos_profile.posa_allow_credit_sale &&
         this.total_payments == 0
       ) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `Please enter the amount paid`,
           color: "error",
         });
@@ -797,7 +797,7 @@ export default {
       if (!this.paid_change) this.paid_change = 0;
 
       if (this.paid_change > -this.diff_payment) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `Paid change can not be greater than total change!`,
           color: "error",
         });
@@ -810,7 +810,7 @@ export default {
       );
 
       if (this.is_cashback && total_change != -this.diff_payment) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `Error in change calculations!`,
           color: "error",
         });
@@ -825,7 +825,7 @@ export default {
       });
 
       if (credit_calc_check.length > 0) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `redeamed credit can not greater than its total.`,
           color: "error",
         });
@@ -838,7 +838,7 @@ export default {
         this.redeemed_customer_credit >
           (this.invoice_doc.rounded_total || this.invoice_doc.grand_total)
       ) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `can not redeam customer credit more than invoice total`,
           color: "error",
         });
@@ -852,7 +852,7 @@ export default {
       this.is_cashback = true;
       this.sales_person = "";
 
-      evntBus.$emit("new_invoice", "false");
+      evntBus.emit("new_invoice", "false");
       this.back_to_invoice();
     },
     submit_invoice(print) {
@@ -892,8 +892,8 @@ export default {
             if (print) {
               vm.load_print_page();
             }
-            evntBus.$emit("set_last_invoice", vm.invoice_doc.name);
-            evntBus.$emit("show_mesage", {
+            evntBus.emit("set_last_invoice", vm.invoice_doc.name);
+            evntBus.emit("show_mesage", {
               text: `Invoice ${r.message.name} is Submited`,
               color: "success",
             });
@@ -1058,7 +1058,7 @@ export default {
       );
     },
     new_address() {
-      evntBus.$emit("open_new_address", this.invoice_doc.customer);
+      evntBus.emit("open_new_address", this.invoice_doc.customer);
     },
     get_sales_person_names() {
       const vm = this;
@@ -1101,15 +1101,15 @@ export default {
       this.phone_dialog = false;
       const vm = this;
       if (!this.invoice_doc.contact_mobile) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: __(`Pleas Set Customer Mobile Number`),
           color: "error",
         });
-        evntBus.$emit("open_edit_customer");
+        evntBus.emit("open_edit_customer");
         this.back_to_invoice();
         return;
       }
-      evntBus.$emit("freeze", {
+      evntBus.emit("freeze", {
         title: __(`Waiting for payment... `),
       });
       this.invoice_doc.payments.forEach((payment) => {
@@ -1145,8 +1145,8 @@ export default {
               },
             })
             .fail(() => {
-              evntBus.$emit("unfreeze");
-              evntBus.$emit("show_mesage", {
+              evntBus.emit("unfreeze");
+              evntBus.emit("show_mesage", {
                 text: __(`Payment request failed`),
                 color: "error",
               });
@@ -1161,16 +1161,16 @@ export default {
                   ])
                   .then(({ message }) => {
                     if (message.status != "Paid") {
-                      evntBus.$emit("unfreeze");
-                      evntBus.$emit("show_mesage", {
+                      evntBus.emit("unfreeze");
+                      evntBus.emit("show_mesage", {
                         text: __(
                           `Payment Request took too long to respond. Please try requesting for payment again`
                         ),
                         color: "error",
                       });
                     } else {
-                      evntBus.$emit("unfreeze");
-                      evntBus.$emit("show_mesage", {
+                      evntBus.emit("unfreeze");
+                      evntBus.emit("show_mesage", {
                         text: __("Payment of {0} received successfully.", [
                           vm.formtCurrency(
                             message.grand_total,
@@ -1224,7 +1224,7 @@ export default {
         mode_of_payment: payment.mode_of_payment,
         customer: this.invoice_doc.customer,
       };
-      evntBus.$emit("open_mpesa_payments", data);
+      evntBus.emit("open_mpesa_payments", data);
     },
     set_mpesa_payment(payment) {
       this.pos_profile.use_customer_credit = 1;
@@ -1340,7 +1340,7 @@ export default {
 
   mounted: function () {
     this.$nextTick(function () {
-      evntBus.$on("send_invoice_doc_payment", (invoice_doc) => {
+      evntBus.on("send_invoice_doc_payment", (invoice_doc) => {
         this.invoice_doc = invoice_doc;
         const default_payment = this.invoice_doc.payments.find(
           (payment) => payment.default == 1
@@ -1364,15 +1364,15 @@ export default {
         this.get_addresses();
         this.get_sales_person_names();
       });
-      evntBus.$on("register_pos_profile", (data) => {
+      evntBus.on("register_pos_profile", (data) => {
         this.pos_profile = data.pos_profile;
         this.get_mpesa_modes();
       });
-      evntBus.$on("add_the_new_address", (data) => {
+      evntBus.on("add_the_new_address", (data) => {
         this.addresses.push(data);
         this.$forceUpdate();
       });
-      evntBus.$on("update_invoice_type", (data) => {
+      evntBus.on("update_invoice_type", (data) => {
         this.invoiceType = data;
         if (this.invoice_doc && data != "Order") {
           this.invoice_doc.posa_delivery_date = null;
@@ -1381,20 +1381,20 @@ export default {
         }
       });
     });
-    evntBus.$on("update_customer", (customer) => {
+    evntBus.on("update_customer", (customer) => {
       if (this.customer != customer) {
         this.customer_credit_dict = [];
         this.redeem_customer_credit = false;
         this.is_cashback = true;
       }
     });
-    evntBus.$on("set_pos_settings", (data) => {
+    evntBus.on("set_pos_settings", (data) => {
       this.pos_settings = data;
     });
-    evntBus.$on("set_customer_info_to_edit", (data) => {
+    evntBus.on("set_customer_info_to_edit", (data) => {
       this.customer_info = data;
     });
-    evntBus.$on("set_mpesa_payment", (data) => {
+    evntBus.on("set_mpesa_payment", (data) => {
       this.set_mpesa_payment(data);
     });
   },
@@ -1423,7 +1423,7 @@ export default {
         this.invoice_doc.loyalty_amount = 0;
         this.invoice_doc.redeem_loyalty_points = 0;
         this.invoice_doc.loyalty_points = 0;
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `Loyalty Amount can not be more then ${this.available_pioints_amount}`,
           color: "error",
         });
@@ -1453,7 +1453,7 @@ export default {
     },
     redeemed_customer_credit(value) {
       if (value > this.available_customer_credit) {
-        evntBus.$emit("show_mesage", {
+        evntBus.emit("show_mesage", {
           text: `You can redeem customer credit upto ${this.available_customer_credit}`,
           color: "error",
         });

@@ -175,7 +175,7 @@
 </template>
 
 <script>
-import { evntBus } from '../../bus';
+import evntBus from '../../bus';
 export default {
   data: () => ({
     customerDialog: false,
@@ -273,21 +273,21 @@ export default {
     submit_dialog() {
       // validate if all required fields are filled
       if (!this.customer_name) {
-        evntBus.$emit('show_mesage', {
+        evntBus.emit('show_mesage', {
           text: __('Customer name is required.'),
           color: 'error',
         });
         return;
       }
       if (!this.group) {
-        evntBus.$emit('show_mesage', {
+        evntBus.emit('show_mesage', {
           text: __('Customer group is required.'),
           color: 'error',
         });
         return;
       }
       if (!this.territory) {
-        evntBus.$emit('show_mesage', {
+        evntBus.emit('show_mesage', {
           text: __('Customer territory is required.'),
           color: 'error',
         });
@@ -320,19 +320,19 @@ export default {
               if (vm.customer_id) {
                 text = __('Customer updated successfully.');
               }
-              evntBus.$emit('show_mesage', {
+              evntBus.emit('show_mesage', {
                 text: text,
                 color: 'success',
               });
               args.name = r.message.name;
               frappe.utils.play_sound('submit');
-              evntBus.$emit('add_customer_to_list', args);
-              evntBus.$emit('set_customer', r.message.name);
-              evntBus.$emit('fetch_customer_details');
+              evntBus.emit('add_customer_to_list', args);
+              evntBus.emit('set_customer', r.message.name);
+              evntBus.emit('fetch_customer_details');
               this.close_dialog();
             } else {
               frappe.utils.play_sound('error');
-              evntBus.$emit('show_mesage', {
+              evntBus.emit('show_mesage', {
                 text: __('Customer creation failed.'),
                 color: 'error',
               });
@@ -344,7 +344,7 @@ export default {
     },
   },
   created: function () {
-    evntBus.$on('open_update_customer', (data) => {
+    evntBus.on('open_update_customer', (data) => {
       this.customerDialog = true;
       if (data) {
         this.customer_name = data.customer_name;
@@ -361,10 +361,10 @@ export default {
         this.gender = data.gender;
       }
     });
-    evntBus.$on('register_pos_profile', (data) => {
+    evntBus.on('register_pos_profile', (data) => {
       this.pos_profile = data.pos_profile;
     });
-    evntBus.$on('payments_register_pos_profile', (data) => {
+    evntBus.on('payments_register_pos_profile', (data) => {
       this.pos_profile = data.pos_profile;
     });
     this.getCustomerGroups();

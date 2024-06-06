@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { evntBus } from '../../bus';
+import emit from '../../bus';
 import UpdateCustomer from './UpdateCustomer.vue';
 export default {
   data: () => ({
@@ -104,10 +104,10 @@ export default {
       });
     },
     new_customer() {
-      evntBus.$emit('open_update_customer', null);
+      emit.emit('open_update_customer', null);
     },
     edit_customer() {
-      evntBus.$emit('open_update_customer', this.customer_info);
+      emit.emit('open_update_customer', this.customer_info);
     },
     customFilter(item, queryText, itemText) {
       const textOne = item.customer_name
@@ -133,27 +133,27 @@ export default {
 
   created: function () {
     this.$nextTick(function () {
-      evntBus.$on('register_pos_profile', (pos_profile) => {
+      emit.on('register_pos_profile', (pos_profile) => {
         this.pos_profile = pos_profile;
         this.get_customer_names();
       });
-      evntBus.$on('payments_register_pos_profile', (pos_profile) => {
+      emit.on('payments_register_pos_profile', (pos_profile) => {
         this.pos_profile = pos_profile;
         this.get_customer_names();
       });
-      evntBus.$on('set_customer', (customer) => {
+      emit.on('set_customer', (customer) => {
         this.customer = customer;
       });
-      evntBus.$on('add_customer_to_list', (customer) => {
+      emit.on('add_customer_to_list', (customer) => {
         this.customers.push(customer);
       });
-      evntBus.$on('set_customer_readonly', (value) => {
+      emit.on('set_customer_readonly', (value) => {
         this.readonly = value;
       });
-      evntBus.$on('set_customer_info_to_edit', (data) => {
+      emit.on('set_customer_info_to_edit', (data) => {
         this.customer_info = data;
       });
-      evntBus.$on('fetch_customer_details', () => {
+      emit.on('fetch_customer_details', () => {
         this.get_customer_names();
       });
     });
@@ -161,7 +161,7 @@ export default {
 
   watch: {
     customer() {
-      evntBus.$emit('update_customer', this.customer);
+      emit.emit('update_customer', this.customer);
     },
   },
 };

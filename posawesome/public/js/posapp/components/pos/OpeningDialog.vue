@@ -78,7 +78,7 @@
 </template>
 
 <script>
-import { evntBus } from '../../bus';
+import evntBus from '../../bus';
 import format from '../../format';
 export default {
   mixins: [format],
@@ -146,7 +146,7 @@ export default {
   },
   methods: {
     close_opening_dialog() {
-      evntBus.$emit('close_opening_dialog');
+      evntBus.emit('close_opening_dialog');
     },
     get_opening_dialog_data() {
       const vm = this;
@@ -179,8 +179,8 @@ export default {
         })
         .then((r) => {
           if (r.message) {
-            evntBus.$emit('register_pos_data', r.message);
-            evntBus.$emit('set_company', r.message.company);
+            evntBus.emit('register_pos_data', r.message);
+            evntBus.emit('set_company', r.message.company);
             vm.close_opening_dialog();
             is_loading = false;
           }

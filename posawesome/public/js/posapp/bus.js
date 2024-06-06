@@ -1,1 +1,3 @@
-export const evntBus = new Vue();
+import mitt from 'mitt';
+const evntBus = mitt();
+export default evntBus;
