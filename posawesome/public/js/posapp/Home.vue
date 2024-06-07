@@ -15,7 +15,7 @@ import Payments from './components/payments/Pay.vue';
 
 // Define the components
 const page = ref('POS');
-const components = {POS, Payments};
+const components = {Navbar, POS, Payments};
 
 // Method to set the current page
 const setPage = (newPage) => {
